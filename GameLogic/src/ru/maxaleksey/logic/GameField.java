@@ -377,6 +377,10 @@ public class GameField {
         return new Point(size.x,size.y);
     }
 
+    public void setSize(Point size) {
+        this.size = new Point(size.x,size.y);
+    }
+
     public Hashtable<Point, ArrayList<Point>> getGraph() {
         return graph;
     }

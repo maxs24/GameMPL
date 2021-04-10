@@ -4,18 +4,36 @@ import ru.maxaleksey.ui.UI;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class GameDataUI {
+    private static GameDataUI gameDataUI = null;
     private GameField gameField = null;
     private Player opponent = null;
     private Player player = null;
     private boolean isFirst = false;
     private isWIN is_win = isWIN.NONE;
+    private ArrayList<Consumer<String>> sendDataListeners = new ArrayList<>();
 
-    public GameDataUI(Point size,String name_op, int player_count_bar){
-        gameField = new GameField(size);
-        player = new Player("max",player_count_bar);
-        opponent = new Player(name_op, player_count_bar);
+    public void addSendDataListeners(Consumer<String> value){
+        sendDataListeners.add(value);
+    }
+
+    public void removeSendDataListeners(Consumer<String> value){
+        sendDataListeners.remove(value);
+    }
+
+    public static GameDataUI getInstance(){
+        if(gameDataUI == null){
+            return new GameDataUI();
+        }
+        return gameDataUI;
+    }
+
+    private GameDataUI(){
+        gameField = new GameField(new Point(5,5));
+        player = new Player("max",10);
+        opponent = new Player("opponent", 10);
     }
 
     public void setPositions(boolean move, Point pos_player, Point pos_opp, ArrayList<Obstacle> barriers){
@@ -27,6 +45,10 @@ public class GameDataUI {
         }
         if(isFirst){
             makeMove();
+            String data = toString();
+            for(Consumer<String> it: sendDataListeners){
+                it.accept(data);
+            }
         }
     }
 
@@ -39,10 +61,18 @@ public class GameDataUI {
             }
         }
         makeMove();
+        String data = toString();
+        for(Consumer<String> it: sendDataListeners){
+            it.accept(data);
+        }
     }
 
     public Point getSize(){
         return gameField.getSize();
+    }
+
+    public void setSize(Point value){
+        gameField.setSize(value);
     }
 
     public Point getPositionPlayer(){
@@ -79,6 +109,31 @@ public class GameDataUI {
 
     }
 
+    public String getIs_win(){
+        if(is_win == isWIN.WIN){
+            return "win";
+        }
+        if(is_win == isWIN.LOSE){
+            return "lose";
+        }
+        if(is_win == isWIN.DRAW){
+            return "draw";
+        }
+        return "none";
+    }
+
+    public void setPlayerBarriersCount(int pbc){
+        opponent.setCount_barriers(pbc);
+    }
+
+    public void setNameOpponent(String name){
+        opponent.setName(name);
+    }
+
+    public GameField getGameField() {
+        return gameField;
+    }
+
     private void makeMove(){
         Point[] way_player = UI.shortestWay(gameField.getGraph(),player.getPosition(),player.getWin_pos());
         Point[] way_opponent = UI.shortestWay(gameField.getGraph(), opponent.getPosition(), opponent.getWin_pos());
@@ -95,6 +150,42 @@ public class GameDataUI {
                 }
             }
         }
+    }
+
+    public String toString(){
+        StringBuilder data = new StringBuilder("SOCKET STEP ");
+        data.append("\\{\"width\": ");
+        data.append(this.getSize().x);
+        data.append(",\"height\": ");
+        data.append(this.getSize().y);
+        data.append(", \"position\':[");
+        data.append(this.getPositionPlayer().x);
+        data.append(",");
+        data.append(this.getPositionPlayer().y);
+        data.append("], \"opponentPosition:[");
+        data.append(this.getOpponentPosition().x);
+        data.append(",");
+        data.append(this.getOpponentPosition().y);
+        data.append("], \"barriers\": [");
+        ArrayList<Obstacle> mas_barriers = this.getBarriers();
+        for(Obstacle ob: mas_barriers){
+            data.append("[");
+            Point[] mas = ob.getOne();
+            Point[] mas_2 = ob.getTwo();
+            data.append("[");
+            data.append(mas[0]);
+            data.append(",");
+            data.append(mas[1]);
+            data.append("],[");
+            data.append(mas_2[0]);
+            data.append(",");
+            data.append(mas_2[1]);
+            data.append("]]");
+            data.append(",");
+        }
+        data.deleteCharAt(data.length()-1);
+        data.append("}");
+        return data.toString();
     }
 }
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client {
-    private GameDataUI gameData;
+    private GameDataUI gameData = GameDataUI.getInstance();
     private Socket s;
     private boolean stop = false;
     private int port = 5703;
@@ -25,6 +25,7 @@ public class Client {
             cmn = new Communicator(s);
             cmn.addDataReceievListeners(this::dataReceived);
             cmn.start();
+            gameData.addSendDataListeners(this::sendStep);
             sendConnection();
         } catch (IOException e) {
             System.out.println("Подключение не удалось");
@@ -36,7 +37,7 @@ public class Client {
         return !stop && s.isConnected();
     }
 
-    public void dataReceived(String data){
+    private void dataReceived(String data){
         if(data != null){
             if(data.contains("DATA")){
                 getJoinLobby(data);
@@ -112,7 +113,9 @@ public class Client {
                 name = s.split(":")[1];
             }
         }
-        gameData = new GameDataUI(new Point(width,height),name,playerBarrierCount);
+        gameData.setSize(new Point(width,height));
+        gameData.setPlayerBarriersCount(playerBarrierCount);
+        gameData.setNameOpponent(name);
     }
 
     private void getElemPos(String data){
@@ -147,9 +150,6 @@ public class Client {
             }
         }
         gameData.setPositions(move, position_player, position_opponent, obstacles);
-        if(move){
-            sendStep();
-        }
     }
 
     private void getStep(String data){
@@ -175,7 +175,6 @@ public class Client {
             }
         }
         gameData.setStep(position_opponent,obstacles);
-        sendStep();
     }
 
     private void getEnd(String data){
@@ -208,45 +207,13 @@ public class Client {
         cmn.stop();
     }
 
-    private void sendStep(){
-        StringBuilder data = new StringBuilder("SOCKET STEP ");
-        data.append("\\{\"width\": ");
-        data.append(gameData.getSize().x);
-        data.append(",\"height\": ");
-        data.append(gameData.getSize().y);
-        data.append(", \"position\':[");
-        data.append(gameData.getPositionPlayer().x);
-        data.append(",");
-        data.append(gameData.getPositionPlayer().y);
-        data.append("], \"opponentPosition:[");
-        data.append(gameData.getOpponentPosition().x);
-        data.append(",");
-        data.append(gameData.getOpponentPosition().y);
-        data.append("], \"barriers\": [");
-        ArrayList<Obstacle> mas_barriers = gameData.getBarriers();
-        for(Obstacle ob: mas_barriers){
-            data.append("[");
-            Point[] mas = ob.getOne();
-            Point[] mas_2 = ob.getTwo();
-            data.append("[");
-            data.append(mas[0]);
-            data.append(",");
-            data.append(mas[1]);
-            data.append("],[");
-            data.append(mas_2[0]);
-            data.append(",");
-            data.append(mas_2[1]);
-            data.append("]]");
-            data.append(",");
-        }
-        data.deleteCharAt(data.length()-1);
-        data.append("}");
-        String data_str = data.toString();
-        System.out.println(data_str);
-        cmn.sendData(data_str);
+    private void sendStep(String data){
+        System.out.println(data);
+        cmn.sendData(data);
     }
 
-    public static void main(String[] args) {
-        Client client = new Client();
+    public GameDataUI getGameData() {
+        return gameData;
     }
+
 }

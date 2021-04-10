@@ -41,4 +41,8 @@ public class Player {
     public int getWin_pos() {
         return win_pos;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

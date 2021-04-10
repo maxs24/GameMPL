@@ -1,9 +1,7 @@
 package ru.maxaleksey.ui;
 
-import ru.maxaleksey.logic.GameDataUI;
 import ru.maxaleksey.logic.GameField;
 import ru.maxaleksey.logic.Obstacle;
-import ru.maxaleksey.logic.Player;
 
 import java.awt.*;
 import java.util.ArrayList;
