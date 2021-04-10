@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Communications/Communications.iml" filepath="$PROJECT_DIR$/Communications/Communications.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameLogic/GameLogic.iml" filepath="$PROJECT_DIR$/GameLogic/GameLogic.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameMPL.iml" filepath="$PROJECT_DIR$/GameMPL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
     </modules>
   </component>
 </project>

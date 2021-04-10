@@ -7,7 +7,7 @@ public class Obstacle {
     private final Point[] one = new Point[2];
     private final Point[] two = new Point[2];
 
-    Obstacle(Point p11, Point p12, Point p21, Point p22){
+    public Obstacle(Point p11, Point p12, Point p21, Point p22){
         one[0] = p11;
         one[1] = p12;
         two[0] = p21;

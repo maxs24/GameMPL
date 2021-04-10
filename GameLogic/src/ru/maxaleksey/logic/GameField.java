@@ -6,9 +6,10 @@ import java.util.*;
 // игровое поле
 public class GameField {
     private Hashtable<Point, ArrayList<Point>> graph = new Hashtable<>();
+    private ArrayList<Obstacle> obstacles = new ArrayList<>();
     private Point size;
 
-    GameField(Point sizefield){
+    public GameField(Point sizefield){
         size = sizefield;
         for(int i = 0;i<sizefield.x;i++){
             for(int j=0;j<sizefield.y;j++){
@@ -97,7 +98,12 @@ public class GameField {
             addConn(obs.getTwo()[0],obs.getTwo()[1]);
             return false;
         }
+        obstacles.add(obs);
         return true;
+    }
+
+    public ArrayList<Obstacle> getBarriers(){
+        return obstacles;
     }
 
     private Obstacle newObstalce(){
@@ -365,5 +371,13 @@ public class GameField {
             }
         }
         return false;
+    }
+
+    public Point getSize(){
+        return new Point(size.x,size.y);
+    }
+
+    public Hashtable<Point, ArrayList<Point>> getGraph() {
+        return graph;
     }
 }
