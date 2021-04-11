@@ -49,8 +49,9 @@ public class Communicator {
                 active = false;
                 try {
                     if (!s.isClosed()) s.close();
-                }catch (IOException exp){}
-                System.out.println("Обмен данными неожиданно прекращен.");
+                }catch (IOException exp) {
+                    System.out.println("Обмен данными неожиданно прекращен.");
+                }
             }
         }
     }
@@ -89,9 +90,7 @@ public class Communicator {
                     stop();
                 }
                 active = true;
-                Runnable task_two = () ->{
-                    communicate();
-                };
+                Runnable task_two = () -> communicate();
                 task_two.run();
                 communicationprocces = new Thread(task_two);
                 communicationprocces.start();

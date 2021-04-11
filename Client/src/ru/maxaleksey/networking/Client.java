@@ -7,9 +7,7 @@ import ru.maxaleksey.logic.GameDataUI;
 import java.awt.*;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Client {
     private GameDataUI gameData = GameDataUI.getInstance();
@@ -39,33 +37,29 @@ public class Client {
 
     private void dataReceived(String data){
         if(data != null){
+            System.out.println(data);
             if(data.contains("DATA")){
                 getJoinLobby(data);
-                System.out.println(data);
                 return;
             }
             if(data.contains("LOGIN OK")){
                 sendJoinLobby();
-                System.out.println(data);
                 return;
             }
             if(data.contains("LOGIN FAILED")){
-                System.out.println(data);
-                cmn.stop();
+                sendDisconect();
                 return;
             }
             if(data.contains("move")){
                 getElemPos(data);
-                System.out.println(data);
                 return;
             }
             if(data.contains("result")){
                 getEnd(data);
-                System.out.println(data);
+                sendDisconect();
                 return;
             }
             if(data.contains("BYE")){
-                System.out.println(data);
                 cmn.stop();
                 return;
             }
@@ -83,8 +77,9 @@ public class Client {
 
     private void sendJoinLobby(){
         if(cmn.isAlive()) {
-            Scanner scanner = new Scanner(System.in);
-            cmn.sendData(scanner.nextLine());
+            String data = "SOCKET JOINLOBBY {\"id\":null}";
+            cmn.sendData(data);
+            System.out.println(data);
         }
     }
 
@@ -204,12 +199,17 @@ public class Client {
             }
         }
         gameData.setResult(is_win, position_opponent, obstacles);
-        cmn.stop();
     }
 
     private void sendStep(String data){
         System.out.println(data);
         cmn.sendData(data);
+    }
+
+    private void sendDisconect(){
+        String data = "DISCONNECT {\"QUIT\":\"\"}";
+        cmn.sendData(data);
+        System.out.println(data);
     }
 
     public GameDataUI getGameData() {
