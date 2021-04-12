@@ -40,12 +40,20 @@ public class GameDataUI {
         isFirst = move;
         player.setPosition(pos_player);
         opponent.setPosition(pos_opp);
+        if(pos_player.x == 0){
+            player.setWin_pos(getSize().x-1);
+            opponent.setWin_pos(0);
+        }else{
+            player.setWin_pos(0);
+            opponent.setWin_pos(getSize().x-1);
+        }
         for(Obstacle b: barriers){
             gameField.addObstacle(b,player.getPosition(), opponent.getPosition());
         }
         if(isFirst){
             makeMove();
             String data = toString();
+            System.out.println(data);
             for(Consumer<String> it: sendDataListeners){
                 it.accept(data);
             }
@@ -62,6 +70,7 @@ public class GameDataUI {
         }
         makeMove();
         String data = toString();
+        System.out.println(data);
         for(Consumer<String> it: sendDataListeners){
             it.accept(data);
         }
@@ -143,18 +152,15 @@ public class GameDataUI {
             try{
                 UI.putObstacle(way_opponent,gameField, player.getPosition(),opponent.getPosition());
             }catch (Exception e){
-                if(e.getMessage().equals("Поставить препятствие нельзя")){
-                    player.setPosition(UI.move(way_player));
-                }else{
-                    System.out.println(e.getMessage());
-                }
+                System.out.println("Препятствие не поставлено");
+                player.setPosition(UI.move(way_player));
             }
         }
     }
 
     public String toString(){
         StringBuilder data = new StringBuilder("SOCKET STEP ");
-        data.append("\\{\"width\": ");
+        data.append("{\"width\": ");
         data.append(this.getSize().x);
         data.append(",\"height\": ");
         data.append(this.getSize().y);
@@ -173,13 +179,21 @@ public class GameDataUI {
             Point[] mas = ob.getOne();
             Point[] mas_2 = ob.getTwo();
             data.append("[");
-            data.append(mas[0]);
+            data.append(mas[0].x);
             data.append(",");
-            data.append(mas[1]);
+            data.append(mas[0].y);
             data.append("],[");
-            data.append(mas_2[0]);
+            data.append(mas[1].x);
             data.append(",");
-            data.append(mas_2[1]);
+            data.append(mas[1].y);
+            data.append("],[");
+            data.append(mas_2[0].x);
+            data.append(",");
+            data.append(mas_2[0].y);
+            data.append("],[");
+            data.append(mas_2[1].x);
+            data.append(",");
+            data.append(mas_2[1].y);
             data.append("]]");
             data.append(",");
         }
@@ -187,6 +201,7 @@ public class GameDataUI {
         data.append("}");
         return data.toString();
     }
+
 }
 
 enum isWIN{

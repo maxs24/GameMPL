@@ -13,75 +13,100 @@ public class UI {
 
 
     public static boolean choise(Point[] way_player, Point[] way_op){
-        return way_player.length < way_op.length;
+        return way_player.length <= way_op.length;
     }
 
     public static Point[] shortestWay(Hashtable<Point,ArrayList<Point>> graph, Point position, int win_pos){
         Hashtable<Point,Integer> bypass = new Hashtable<>();
-        LinkedList<Point> queue = new LinkedList<>();
         HashSet<Point> set = new HashSet<>();
         Point last_pos = null;
         int d = 0;
-        queue.addLast(position);
-        while(queue.size() != 0){
-            Point this_p = queue.poll();
-            set.add(this_p);
-            bypass.put(this_p,d);
-            if(this_p.x == win_pos){
-                last_pos = this_p;
-                break;
-            }
-            for(Point p:graph.get(this_p)){
-                if(!set.contains(p)){
-                    queue.addLast(p);
+        int n = 0;
+        bypass.put(position,0);
+        boolean flag = true;
+        while(flag){
+            ArrayList<Point> mas_p = new ArrayList<>();
+            for(Point p: bypass.keySet()){
+                if(bypass.get(p) == d){
+                    if(p.x == win_pos){
+                        n = d;
+                        last_pos = p;
+                        flag = false;
+                        break;
+                    }
+                    set.add(p);
+                    for(Point loc: graph.get(p)){
+                        if(!set.contains(loc)) {
+                            mas_p.add(loc);
+                        }
+                    }
                 }
+            }
+            for(Point p: mas_p){
+                bypass.put(p,d+1);
             }
             d += 1;
         }
-        if(last_pos != null){
-            Point this_p = last_pos;
-            Point[] mas_point = new Point[d+1];
-            mas_point[d] = last_pos;
-            for(int i = d-1; i>=0; i--){
-                for(Point p: graph.get(this_p)){
-                    if(bypass.get(p) == i){
+        Point this_p = last_pos;
+        Point[] mas_point = new Point[n+1];
+        mas_point[n] = last_pos;
+        for(int i = n-1; i>=0; i--){
+            for(Point p: graph.get(this_p)){
+                if(contain(bypass,p)){
+                    if (bypass.get(p) == i) {
                         mas_point[i] = p;
                         this_p = p;
                         break;
                     }
                 }
             }
-            return mas_point;
         }
-        return null;
+        return mas_point;
     }
 
     public static Point move(Point[] way){
         return way[1];
     }
 
-    private static Obstacle obst(Point one, Point two, int i){
+    private static Obstacle obst(Point one, Point two, int i,Point size){
         if(one.x == two.x){
-            Point three_point = new Point(one.x+i,one.y);
-            Point end_point = new Point(three_point.x,two.y);
-            return new Obstacle(one,two,three_point,end_point);
+            if(one.x+i < size.x) {
+                Point three_point = new Point(one.x + i, one.y);
+                Point end_point = new Point(three_point.x, two.y);
+                return new Obstacle(one, two, three_point, end_point);
+            }else{
+                Point three_point = new Point(one.x - i, one.y);
+                Point end_point = new Point(three_point.x, two.y);
+                return new Obstacle(one, two, three_point, end_point);
+            }
         }else{
-            Point three_point = new Point(one.x,one.y+i);
-            Point end_point = new Point(three_point.x,two.y);
-            return new Obstacle(one,two,three_point,end_point);
+            if(one.y + i < size.y) {
+                Point three_point = new Point(one.x, one.y + i);
+                Point end_point = new Point(two.x, one.y + i);
+                return new Obstacle(one, two, three_point, end_point);
+            }else{
+                Point three_point = new Point(one.x, one.y - i);
+                Point end_point = new Point(two.x, one.y - i);
+                return new Obstacle(one, two, three_point, end_point);
+            }
         }
     }
 
     public static void putObstacle(Point[] way_op, GameField gameField, Point player, Point op) throws Exception{
-        for(int j = 1;j<way_op.length;j++){
-            if(gameField.addObstacle(obst(way_op[j-1], way_op[j],1),player, op)){
+        for(int j = 1;j<way_op.length;j++) {
+            if (gameField.addObstacle(obst(way_op[j - 1], way_op[j], 1, gameField.getSize()), player, op)) {
                 return;
-            }else{
-                if(gameField.addObstacle(obst(way_op[j-1], way_op[j],-1),player, op)){
-                    return;
-                }
             }
         }
         throw new Exception("Поставить препятствие нельзя");
+    }
+
+    private static boolean contain(Hashtable<Point,Integer> map, Point p){
+        for(Point point: map.keySet()) {
+            if(p.x == point.x && p.y == point.y){
+                return true;
+            }
+        }
+        return false;
     }
 }
