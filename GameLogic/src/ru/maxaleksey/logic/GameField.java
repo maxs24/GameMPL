@@ -93,10 +93,12 @@ public class GameField {
     public boolean addObstacle(Obstacle obs, Point player_position_one, Point player_position_two){
         removeConn(obs.getOne()[0],obs.getOne()[1]);
         removeConn(obs.getTwo()[0],obs.getTwo()[1]);
-        if(!(isConnected(player_position_one,true) && isConnected(player_position_two,false))){
-            addConn(obs.getOne()[0],obs.getOne()[1]);
-            addConn(obs.getTwo()[0],obs.getTwo()[1]);
-            return false;
+        if(obstacles.size() != 0) {
+            if (!(isConnected(player_position_one, true) && isConnected(player_position_two, false))) {
+                addConn(obs.getOne()[0], obs.getOne()[1]);
+                addConn(obs.getTwo()[0], obs.getTwo()[1]);
+                return false;
+            }
         }
         obstacles.add(obs);
         return true;

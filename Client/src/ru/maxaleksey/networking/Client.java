@@ -69,7 +69,7 @@ public class Client {
 
     private void sendConnection(){
         if(cmn.isAlive()) {
-            String data = "CONNECTION {\"LOGIN\":\"maxim\"}";
+            String data = "CONNECTION {\"LOGIN\":\"fanzil\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -77,7 +77,7 @@ public class Client {
 
     private void sendJoinLobby(){
         if(cmn.isAlive()) {
-            String data = "SOCKET JOINLOBBY {\"id\":null}";
+            String data = "SOCKET JOINLOBBY {\"id\":\"1121\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
