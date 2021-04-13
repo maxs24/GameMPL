@@ -77,7 +77,7 @@ public class Client {
 
     private void sendJoinLobby(){
         if(cmn.isAlive()) {
-            String data = "SOCKET JOINLOBBY {\"id\":\"235\"}";
+            String data = "SOCKET JOINLOBBY {\"id\":null}";
             cmn.sendData(data);
             System.out.println(data);
         }

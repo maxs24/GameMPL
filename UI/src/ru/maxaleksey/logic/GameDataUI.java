@@ -158,11 +158,12 @@ public class GameDataUI {
     private void makeMove(){
         Point[] way_player = UI.shortestWay(gameField.getGraph(),player.getPosition(),player.getWin_pos());
         Point[] way_opponent = UI.shortestWay(gameField.getGraph(), opponent.getPosition(), opponent.getWin_pos());
-        if(UI.choise(way_player,way_opponent)){
+        if(UI.choise(way_player,way_opponent) || player.getCount_barriers()==0){
             player.setPosition(UI.move(way_player));
         }else{
             try{
                 UI.putObstacle(way_opponent,gameField, player.getPosition(),opponent.getPosition());
+                player.setCount_barriers(player.getCount_barriers()-1);
             }catch (Exception e){
                 System.out.println("Препятствие не поставлено");
                 player.setPosition(UI.move(way_player));
@@ -172,19 +173,19 @@ public class GameDataUI {
 
     public String toString(){
         StringBuilder data = new StringBuilder("SOCKET STEP ");
-        data.append("{\"width\": ");
+        data.append("{\"width\":");
         data.append(this.getSize().y);
-        data.append(",\"height\": ");
+        data.append(",\"height\":");
         data.append(this.getSize().x);
-        data.append(", \"position\':[");
+        data.append(",\"position\":[");
         data.append(this.getPositionPlayer().x);
         data.append(",");
         data.append(this.getPositionPlayer().y);
-        data.append("], \"opponentPosition:[");
+        data.append("],\"opponentPosition\":[");
         data.append(this.getOpponentPosition().x);
         data.append(",");
         data.append(this.getOpponentPosition().y);
-        data.append("], \"barriers\": [");
+        data.append("],\"barriers\":[");
         ArrayList<Obstacle> mas_barriers = this.getBarriers();
         for(Obstacle ob: mas_barriers){
             data.append("[");
@@ -210,6 +211,7 @@ public class GameDataUI {
             data.append(",");
         }
         data.deleteCharAt(data.length()-1);
+        data.append("]");
         data.append("}");
         return data.toString();
     }
