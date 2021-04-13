@@ -48,6 +48,7 @@ public class Communicator {
             }catch (Exception e){
                 active = false;
                 try {
+                    sendData("DISCONNECT {\"QUIT\":\"\"}");
                     if (!s.isClosed()) s.close();
                 }catch (IOException exp) {
                     System.out.println("Обмен данными неожиданно прекращен.");

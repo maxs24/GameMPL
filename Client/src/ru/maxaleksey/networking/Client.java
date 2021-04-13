@@ -69,7 +69,7 @@ public class Client {
 
     private void sendConnection(){
         if(cmn.isAlive()) {
-            String data = "CONNECTION {\"LOGIN\":\"fanzil\"}";
+            String data = "CONNECTION {\"LOGIN\":\"zilya\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -77,7 +77,7 @@ public class Client {
 
     private void sendJoinLobby(){
         if(cmn.isAlive()) {
-            String data = "SOCKET JOINLOBBY {\"id\":\"1121\"}";
+            String data = "SOCKET JOINLOBBY {\"id\":\"1183\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -224,7 +224,6 @@ public class Client {
     }
 
     private void sendStep(String data){
-        System.out.println(data);
         cmn.sendData(data);
     }
 
