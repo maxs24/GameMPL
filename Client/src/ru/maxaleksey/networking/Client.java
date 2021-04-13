@@ -15,7 +15,7 @@ public class Client {
     private boolean stop = false;
     private int port = 5703;
     private Communicator cmn;
-    private String serveradress = "chopin.skyseven.ru";
+    private String serveradress = "192.168.43.157";
 
     public Client(){
         try {
@@ -69,7 +69,7 @@ public class Client {
 
     private void sendConnection(){
         if(cmn.isAlive()) {
-            String data = "CONNECTION {\"LOGIN\":\"max\"}";
+            String data = "CONNECTION {\"LOGIN\":\"maxim\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -93,16 +93,20 @@ public class Client {
         String name = "";
         for(String s: data_lobby){
             if(s.contains("width")){
-                width = Integer.getInteger(s.split(":")[1]);
+                String width_str = s.split(":")[1].split("\"")[0];
+                width = Integer.parseInt(width_str);
             }
             if(s.contains("height")){
-                height = Integer.getInteger(s.split(":")[1]);
+                String height_str = s.split(":")[1].split("\"")[0];
+                height = Integer.parseInt(height_str);
             }
             if(s.contains("gameBarrierCount")){
-                gameBarrierCount = Integer.getInteger(s.split(":")[1]);
+                String BarrierCount_str = s.split(":")[1].split("\"")[0];
+                gameBarrierCount = Integer.parseInt(BarrierCount_str);
             }
             if(s.contains("playerBarrierCount")){
-                playerBarrierCount = Integer.getInteger(s.split(":")[1]);
+                String BarrierCount_str = s.split(":")[1].split("\"")[0];
+                width = Integer.parseInt(BarrierCount_str);
             }
             if(s.contains("name")){
                 name = s.split(":")[1];
@@ -123,25 +127,25 @@ public class Client {
         for(int i =0;i<data_field.length;i++){
             if(data_field[i].contains("position")){
                 String[] position = data_field[i+1].split("\\[|\\]")[1].split(",");
-                position_player = new Point(Integer.getInteger(position[0]),Integer.getInteger(position[1]));
+                position_player = new Point(Integer.parseInt(position[0]),Integer.parseInt(position[1]));
             }
             if(data_field[i].contains("opponentPosition")){
                 String[] opponent_position = data_field[i+1].split("\\[|\\]")[1].split(",");
-                position_opponent = new Point(Integer.getInteger(opponent_position[0]),Integer.getInteger(opponent_position[1]));
+                position_opponent = new Point(Integer.parseInt(opponent_position[0]),Integer.parseInt(opponent_position[1]));
             }
             if(data_field[i].contains("barriers")){
                 String[] barriers = data_field[i+1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for(String s: barriers){
                     String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.getInteger(pair[0]),Integer.getInteger(pair[1])));
+                    mas_points.add(new Point(Integer.parseInt(pair[0]),Integer.parseInt(pair[1])));
                 }
                 for(int j =0;j<mas_points.size()-3;j+=4){
                     obstacles.add(new Obstacle(mas_points.get(i),mas_points.get(i+1),mas_points.get(i+2),mas_points.get(i+3)));
                 }
             }
             if(data_field[i].contains("move")){
-                move = Boolean.getBoolean(data_field[i+1]);
+                move = Boolean.parseBoolean(data_field[i+1]);
             }
         }
         gameData.setPositions(move, position_player, position_opponent, obstacles);
@@ -155,14 +159,14 @@ public class Client {
         for(int i =0;i<data_field.length;i++) {
             if (data_field[i].contains("opponentPosition")) {
                 String[] opponent_position = data_field[i + 1].split("\\[|\\]")[1].split(",");
-                position_opponent = new Point(Integer.getInteger(opponent_position[0]), Integer.getInteger(opponent_position[1]));
+                position_opponent = new Point(Integer.parseInt(opponent_position[0]), Integer.parseInt(opponent_position[1]));
             }
             if (data_field[i].contains("barriers")) {
                 String[] barriers = data_field[i + 1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for (String s : barriers) {
                     String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.getInteger(pair[0]), Integer.getInteger(pair[1])));
+                    mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
                 }
                 for (int j = 0; j < mas_points.size() - 3; j += 4) {
                     obstacles.add(new Obstacle(mas_points.get(i), mas_points.get(i + 1), mas_points.get(i + 2), mas_points.get(i + 3)));
@@ -181,14 +185,14 @@ public class Client {
         for(int i =0;i<data_field.length;i++) {
             if (data_field[i].contains("opponentPosition")) {
                 String[] opponent_position = data_field[i + 1].split("\\[|\\]")[1].split(",");
-                position_opponent = new Point(Integer.getInteger(opponent_position[0]), Integer.getInteger(opponent_position[1]));
+                position_opponent = new Point(Integer.parseInt(opponent_position[0]), Integer.parseInt(opponent_position[1]));
             }
             if (data_field[i].contains("barriers")) {
                 String[] barriers = data_field[i + 1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for (String s : barriers) {
                     String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.getInteger(pair[0]), Integer.getInteger(pair[1])));
+                    mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
                 }
                 for (int j = 0; j < mas_points.size() - 3; j += 4) {
                     obstacles.add(new Obstacle(mas_points.get(i), mas_points.get(i + 1), mas_points.get(i + 2), mas_points.get(i + 3)));

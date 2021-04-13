@@ -1,11 +1,13 @@
 package ru.maxaleksey.windows;
 
 import ru.maxaleksey.logic.GameDataUI;
+import ru.maxaleksey.logic.Obstacle;
 import ru.maxaleksey.networking.Client;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 // главное окно в которой проходит игра
 public class MainWindow extends JFrame {
@@ -33,7 +35,7 @@ public class MainWindow extends JFrame {
 
         gameDataUI.addSendDataListeners(this::draw);
         client  = new Client();
-        animator = new Animator(panel.getGraphics());
+        animator = new Animator(panel.getGraphics(),gameDataUI);
     }
 
     private void draw(String data){

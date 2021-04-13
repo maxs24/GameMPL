@@ -11,13 +11,14 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Animator {
-    private GameDataUI gameDataUI = GameDataUI.getInstance();
+    private GameDataUI gameDataUI;
     private Graphics graphics;
     private Graphics screenGraphics;
     private BufferedImage img;
     private HashMap<Integer, BufferedImage> images = new HashMap<>();
 
-    public Animator(Graphics screenGraphics){
+    public Animator(Graphics screenGraphics, GameDataUI gamedata){
+        gameDataUI = gamedata;
         this.screenGraphics = screenGraphics;
         this.img = new BufferedImage(getFieldWidth(), getFieldHeight(), BufferedImage.TYPE_3BYTE_BGR);
         this.graphics = img.getGraphics();
@@ -76,15 +77,15 @@ public class Animator {
     }
 
     private void drawCells() throws IOException {
-        Set<Point> points = gameDataUI.getGameField().getGraph().keySet();
-        for (int i = 0; i < points.size(); i++) {
-            for (int j = 0; j < points.size(); j++) {
+        Point points = gameDataUI.getGameField().getSize();
+        for (int i = 0; i < points.x; i++) {
+            for (int j = 0; j < points.y; j++) {
                 graphics.drawImage(images.get(0), i * MainWindow.getCELL_SIZE(), j * MainWindow.getCELL_SIZE(), MainWindow.getCELL_SIZE(), MainWindow.getCELL_SIZE(), null);
             }
         }
         graphics.setColor(Color.BLACK);
-        for (int i = 0; i < points.size(); i++) {
-            for (int j = 0; j < points.size(); j++) {
+        for (int i = 0; i < points.x; i++) {
+            for (int j = 0; j < points.y; j++) {
                 graphics.drawLine(i * MainWindow.getCELL_SIZE(), j * MainWindow.getCELL_SIZE(), i * MainWindow.getCELL_SIZE() + MainWindow.getCELL_SIZE(), j * MainWindow.getCELL_SIZE());
                 graphics.drawLine(i * MainWindow.getCELL_SIZE(), j * MainWindow.getCELL_SIZE(), i * MainWindow.getCELL_SIZE(), j * MainWindow.getCELL_SIZE() + MainWindow.getCELL_SIZE());
             }
@@ -136,7 +137,7 @@ public class Animator {
 
     public void saveToFile(String data){
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\kseno\\OneDrive\\Desktop\\GameZip\\Steps.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\kseno\\OneDrive\\Рабочий стол\\GameZip\\Steps"));
             bw.write(data);
             bw.close();
         }catch (IOException e){
