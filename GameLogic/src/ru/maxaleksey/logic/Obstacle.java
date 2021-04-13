@@ -35,4 +35,13 @@ public class Obstacle {
         value[1] = two[1];
         return value;
     }
+    public boolean equals(Obstacle obj) {
+        if(this.one[0].x == obj.one[0].x && this.one[0].y == obj.one[0].y
+                && this.one[1].x == obj.one[1].x && this.one[1].y == obj.one[1].y
+                && this.two[0].x == obj.two[0].x && this.two[0].y == obj.two[0].y
+                && this.two[1].x == obj.two[1].x && this.two[1].y == obj.two[1].y){
+            return true;
+        }
+        return false;
+    }
 }

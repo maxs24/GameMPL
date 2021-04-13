@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Client {
-    private GameDataUI gameData = GameDataUI.getInstance();
+    private static GameDataUI gameData = GameDataUI.getInstance();
     private Socket s;
     private boolean stop = false;
     private int port = 5703;
@@ -83,7 +83,7 @@ public class Client {
         }
     }
 
-    private void getJoinLobby(String data){
+    private static void getJoinLobby(String data){
         String[] data_mas = data.split("(\\{|\\})");
         String[] data_lobby = data_mas[2].split(",");
         int width = 0;
@@ -106,7 +106,7 @@ public class Client {
             }
             if(s.contains("playerBarrierCount")){
                 String BarrierCount_str = s.split(":")[1].split("\"")[0];
-                width = Integer.parseInt(BarrierCount_str);
+                playerBarrierCount = Integer.parseInt(BarrierCount_str);
             }
             if(s.contains("name")){
                 name = s.split(":")[1];
@@ -117,7 +117,7 @@ public class Client {
         gameData.setNameOpponent(name);
     }
 
-    private void getElemPos(String data){
+    private static void getElemPos(String data){
         String[] data_mas = data.split("(\\{|\\})");
         String[] data_field = data_mas[1].split(":");
         Point position_player = null;
@@ -137,21 +137,27 @@ public class Client {
                 String[] barriers = data_field[i+1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for(String s: barriers){
-                    String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.parseInt(pair[0]),Integer.parseInt(pair[1])));
+                    if(!(s.equals(" ") || s.equals("")||s.equals(","))) {
+                        String[] pair = s.split(",");
+                        mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
+                    }
                 }
                 for(int j =0;j<mas_points.size()-3;j+=4){
-                    obstacles.add(new Obstacle(mas_points.get(i),mas_points.get(i+1),mas_points.get(i+2),mas_points.get(i+3)));
+                    obstacles.add(new Obstacle(mas_points.get(j),mas_points.get(j+1),mas_points.get(j+2),mas_points.get(j+3)));
                 }
             }
             if(data_field[i].contains("move")){
-                move = Boolean.parseBoolean(data_field[i+1]);
+                if(data_field[i+1].contains("true")) {
+                    move = true;
+                }else{
+                    move = false;
+                }
             }
         }
         gameData.setPositions(move, position_player, position_opponent, obstacles);
     }
 
-    private void getStep(String data){
+    private static void getStep(String data){
         String[] data_mas = data.split("(\\{|\\})");
         String[] data_field = data_mas[1].split(":");
         Point position_opponent = null;
@@ -165,18 +171,20 @@ public class Client {
                 String[] barriers = data_field[i + 1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for (String s : barriers) {
-                    String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
+                    if(!(s.equals(" ") || s.equals("")||s.equals(","))) {
+                        String[] pair = s.split(",");
+                        mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
+                    }
                 }
                 for (int j = 0; j < mas_points.size() - 3; j += 4) {
-                    obstacles.add(new Obstacle(mas_points.get(i), mas_points.get(i + 1), mas_points.get(i + 2), mas_points.get(i + 3)));
+                    obstacles.add(new Obstacle(mas_points.get(j), mas_points.get(j + 1), mas_points.get(j + 2), mas_points.get(j + 3)));
                 }
             }
         }
         gameData.setStep(position_opponent,obstacles);
     }
 
-    private void getEnd(String data){
+    private static void getEnd(String data){
         String[] data_mas = data.split("(\\{|\\})");
         String[] data_field = data_mas[1].split(":");
         Point position_opponent = null;
@@ -191,15 +199,25 @@ public class Client {
                 String[] barriers = data_field[i + 1].split("\\[|\\]");
                 ArrayList<Point> mas_points = new ArrayList<>();
                 for (String s : barriers) {
-                    String[] pair = s.split(",");
-                    mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
+                    if(!(s.equals(" ") || s.equals("")||s.equals(","))) {
+                        String[] pair = s.split(",");
+                        mas_points.add(new Point(Integer.parseInt(pair[0]), Integer.parseInt(pair[1])));
+                    }
                 }
                 for (int j = 0; j < mas_points.size() - 3; j += 4) {
-                    obstacles.add(new Obstacle(mas_points.get(i), mas_points.get(i + 1), mas_points.get(i + 2), mas_points.get(i + 3)));
+                    obstacles.add(new Obstacle(mas_points.get(j), mas_points.get(j + 1), mas_points.get(j + 2), mas_points.get(j + 3)));
                 }
             }
             if(data_field[i].contains("result")){
-                is_win = data_field[i+1];
+                if(data_field[i+1].contains("win")) {
+                    is_win = "win";
+                }else{
+                    if(data_field[i+1].contains("lose")){
+                        is_win = "lose";
+                    }else{
+                        is_win = "draw";
+                    }
+                }
             }
         }
         gameData.setResult(is_win, position_opponent, obstacles);
@@ -218,6 +236,13 @@ public class Client {
 
     public GameDataUI getGameData() {
         return gameData;
+    }
+
+    public static void main(String[] args) {
+        Client.getJoinLobby("{\"DATA\":{\"_id\":\"string\",\"width\":8,\"height\":8,\"gameBarrierCount\":1,\"playerBarrierCount\":2,\"name\":string,\"players_count\":2},\"SUCCESS\":true}");
+        Client.getElemPos("SOCKET STARTGAME {\"move\": true, \"width\": 8,\"height\":8, \"position\":[0,0], \"opponentPosition\":[7,7], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]]}");
+        Client.getStep("SOCKET STEP {\"width\": 8,\"height\":8, \"position\":[1,0], \"opponentPosition\":[7,6], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]}");
+        Client.getEnd("SOCKET ENDGAME {\"result\": \"win\",\"width\": 8,\"height\":8, \"position\":[1,0], \"opponentPosition\":[7,6], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]]}");
     }
 
 }

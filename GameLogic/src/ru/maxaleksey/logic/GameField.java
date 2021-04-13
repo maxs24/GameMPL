@@ -379,6 +379,24 @@ public class GameField {
 
     public void setSize(Point size) {
         this.size = new Point(size.x,size.y);
+        graph.clear();
+        for(int i = 0;i<size.x;i++){
+            for(int j=0;j<size.y;j++){
+                if(i == size.x-1 || i == 0){
+                    if(j == 0 || j == size.y-1){
+                        setAngle(i,j);
+                    }else{
+                        setBorder(i,j);
+                    }
+                }else{
+                    if(j == 0 || j == size.y-1){
+                        setBorder(i,j);
+                    }else{
+                        setMiddle(i,j);
+                    }
+                }
+            }
+        }
     }
 
     public Hashtable<Point, ArrayList<Point>> getGraph() {
