@@ -173,9 +173,9 @@ public class GameDataUI {
     public String toString(){
         StringBuilder data = new StringBuilder("SOCKET STEP ");
         data.append("{\"width\": ");
-        data.append(this.getSize().x);
-        data.append(",\"height\": ");
         data.append(this.getSize().y);
+        data.append(",\"height\": ");
+        data.append(this.getSize().x);
         data.append(", \"position\':[");
         data.append(this.getPositionPlayer().x);
         data.append(",");

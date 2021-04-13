@@ -69,7 +69,7 @@ public class Client {
 
     private void sendConnection(){
         if(cmn.isAlive()) {
-            String data = "CONNECTION {\"LOGIN\":\"zilya\"}";
+            String data = "CONNECTION {\"LOGIN\":\"nastenko\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -77,7 +77,7 @@ public class Client {
 
     private void sendJoinLobby(){
         if(cmn.isAlive()) {
-            String data = "SOCKET JOINLOBBY {\"id\":\"1183\"}";
+            String data = "SOCKET JOINLOBBY {\"id\":\"235\"}";
             cmn.sendData(data);
             System.out.println(data);
         }
@@ -112,7 +112,7 @@ public class Client {
                 name = s.split(":")[1];
             }
         }
-        gameData.setSize(new Point(width,height));
+        gameData.setSize(new Point(height,width));
         gameData.setPlayerBarriersCount(playerBarrierCount);
         gameData.setNameOpponent(name);
     }

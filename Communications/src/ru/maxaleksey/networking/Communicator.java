@@ -46,12 +46,17 @@ public class Communicator {
                     }
                 }
             }catch (Exception e){
+                for(StackTraceElement s:e.getStackTrace()){
+                    System.out.println(s);
+                }
+                System.out.println(e.getMessage());
                 active = false;
                 try {
                     sendData("DISCONNECT {\"QUIT\":\"\"}");
                     if (!s.isClosed()) s.close();
-                }catch (IOException exp) {
                     System.out.println("Обмен данными неожиданно прекращен.");
+                }catch (IOException exp) {
+                    System.out.println("Ошибка");
                 }
             }
         }
