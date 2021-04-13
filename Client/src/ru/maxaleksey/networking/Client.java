@@ -15,7 +15,7 @@ public class Client {
     private boolean stop = false;
     private int port = 5703;
     private Communicator cmn;
-    private String serveradress = "192.168.43.157";
+    private String serveradress = "chopin.skyseven.ru";
 
     public Client(){
         try {
@@ -228,7 +228,7 @@ public class Client {
         cmn.sendData(data);
     }
 
-    private void sendDisconect(){
+    public void sendDisconect(){
         String data = "DISCONNECT {\"QUIT\":\"\"}";
         cmn.sendData(data);
         System.out.println(data);
@@ -236,13 +236,6 @@ public class Client {
 
     public GameDataUI getGameData() {
         return gameData;
-    }
-
-    public static void main(String[] args) {
-        Client.getJoinLobby("{\"DATA\":{\"_id\":\"string\",\"width\":8,\"height\":8,\"gameBarrierCount\":1,\"playerBarrierCount\":2,\"name\":string,\"players_count\":2},\"SUCCESS\":true}");
-        Client.getElemPos("SOCKET STARTGAME {\"move\": true, \"width\": 8,\"height\":8, \"position\":[0,0], \"opponentPosition\":[7,7], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]]}");
-        Client.getStep("SOCKET STEP {\"width\": 8,\"height\":8, \"position\":[1,0], \"opponentPosition\":[7,6], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]}");
-        Client.getEnd("SOCKET ENDGAME {\"result\": \"win\",\"width\": 8,\"height\":8, \"position\":[1,0], \"opponentPosition\":[7,6], \"barriers\": [[[5,4],[5,5],[6,4],[6,5]]]}");
     }
 
 }

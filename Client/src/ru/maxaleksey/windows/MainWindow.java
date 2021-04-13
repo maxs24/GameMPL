@@ -6,6 +6,8 @@ import ru.maxaleksey.networking.Client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -32,6 +34,13 @@ public class MainWindow extends JFrame {
 
         panel.setBounds(0, 0, gameDataUI.getSize().x * getCELL_SIZE(), gameDataUI.getSize().y * getCELL_SIZE());
         panel.setBackground(Color.WHITE);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                client.sendDisconect();
+            }
+        });
 
         gameDataUI.addSendDataListeners(this::draw);
         client  = new Client();
