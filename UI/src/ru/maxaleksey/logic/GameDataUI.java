@@ -102,20 +102,7 @@ public class GameDataUI {
         return gameField.getBarriers();
     }
 
-    public void setResult(String result, Point op_pos, ArrayList<Obstacle> barriers){
-        opponent.setPosition(op_pos);
-        ArrayList<Obstacle> current_bariers = gameField.getBarriers();
-        for(Obstacle b: barriers){
-            boolean flag = false;
-            for(Obstacle c_b: current_bariers){
-                if(c_b.equals(b)){
-                    flag = true;
-                }
-            }
-            if(!flag){
-                gameField.addObstacle(b,player.getPosition(),op_pos);
-            }
-        }
+    public void setResult(String result){
         if(result.contains("win")){
             is_win = isWIN.WIN;
         }else{

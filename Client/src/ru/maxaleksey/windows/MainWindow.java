@@ -39,11 +39,6 @@ public class MainWindow extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 client.sendDisconect();
-                try {
-                    Thread.sleep(1000);
-                }catch (InterruptedException exp){
-                    System.out.println("Ошибка");
-                }
             }
         });
 
